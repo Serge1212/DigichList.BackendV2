@@ -1,27 +1,40 @@
 ﻿using DigichList.Core.Entities;
-using DigichList.Core.Repositories.Base;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DigichList.Core.Repositories
 {
-    public interface IUserRepository : IRepository<User, int>
+    /// <summary>
+    /// The dedicated repo for working with users.
+    /// </summary>
+    public interface IUserRepository
     {
-        public Task<User> GetUserByTelegramIdAsync(int telegramId);
+        /// <summary>
+        /// Returns the user by specified chat identifier (the unique identifier in telegram).
+        /// </summary>
+        public Task<User> GetUserByChatIdAsync(int chatId);
 
-        public Task<User> GetUserByTelegramIdWithRoleAsync(int telegramId);
+        /// <summary>
+        /// Returns the user by specified chat identifier (the unique identifier in telegram) grabbing the related role.
+        /// </summary>
+        public Task<User> GetUserByChatIdWithRoleAsync(int chatId);
 
+        /// <summary>
+        /// Gets all users with related roles.
+        /// </summary>
         public IEnumerable<User> GetUsersWithRoles();
 
-        public IEnumerable<User> GetTechnicians();
+        public IEnumerable<User> GetTechnicians(); //TODO: consider delete
 
-        public IEnumerable<User> GetUsersWithRolesAndAssignedDefects();
+        public IEnumerable<User> GetUsersWithRolesAndAssignedDefects(); //TODO: consider delete
 
-        public Task<User> GetUserWithRoleAsync(int id);
+        public Task<User> GetUserWithRoleAsync(int id); //TODO: why 2 methods with chatId and identity? consider delete.
 
-        public Task<User> GetUserWithRolesAndAssignedDefectsByIdAsync(int id);
+        public Task<User> GetUserWithRolesAndAssignedDefectsByIdAsync(int id); //TODO: consider delete
 
+        /// <summary>
+        /// Deletes the specified users.
+        /// </summary>
         public Task DeleteRangeAsync(int[] idArr);
-
     }
 }

@@ -1,63 +1,74 @@
 ﻿using DigichList.Core.Entities;
 using DigichList.Core.Repositories;
-using DigichList.Infrastructure.Data;
-using DigichList.Infrastructure.Repositories.Base;
+using DigichList.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DigichList.Infrastructure.Repositories
 {
-    public class RoleRepository : Repository<Role, int>, IRoleRepository
+    /// <summary>
+    /// The dedicated repo for working with user roles.
+    /// </summary>
+    public class RoleRepository : IRoleRepository
     {
-        public RoleRepository(DigichListContext context) : base(context) {}
-
-
-        public async Task<Role> GetRoleByNameAsync(string roleName)
+        readonly DigichlistContext _context;
+        public RoleRepository(DigichlistContext context)
         {
-            return await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
+            _context = context;
         }
-        public async Task<bool> AssignRole(User user, int roleId)
+
+        /// <inheritdoc />
+        public async Task<Role> GetByIdAsync(int id) => await _context.Roles.FindAsync(id);
+
+        /// <inheritdoc />
+        public async Task<Role> GetRoleByNameAsync(string roleName) => await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName); //TODO: Id only maybe?
+
+        /// <inheritdoc />
+        public async Task<bool> AssignRoleAsync(User user, int roleId)
         {
             if(user == null)
                 return false;
-
 
             var role = await GetByIdAsync(roleId);
 
             if(role == null)
                 return false;
             
-            if(user?.Role?.Name == "Technician")
+            // remove all assigned defects if a user is no longer a technician.
+            if(user?.Role?.Name == "Technician") //TODO: why rely on a magic value?
             {
                 _context
-                    .AssignedDefects
-                    .RemoveRange(_context.AssignedDefects.Where(x => x.AssignedWorker.Id == user.Id));
+                    .Defects
+                    .RemoveRange(_context.Defects.Where(x => x.AssignedWorker.Id == user.Id));
             }
 
+            // assign new role.
             user.Role = role;
             user.IsRegistered = true;
             _context.Users.Update(user);
-            await SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
-        public bool RemoveRoleFromUser(User user)
+        /// <inheritdoc />
+        public async Task<bool> RemoveRoleFromUserAsync(User user)
         {
             if (user == null)
                 return false;
 
-            RemoveRoleAndAssignedDefects(user);
+            await RemoveRoleAndAssignedDefectsAsync(user);
             return true;
         }
 
-        private void RemoveRoleAndAssignedDefects(User user)
+        private async Task RemoveRoleAndAssignedDefectsAsync(User user)
         {
-            _context.AssignedDefects.RemoveRange(user.AssignedDefects.Where(x => x.ClosedAt == null));
-            user.AssignedDefects = null;
+            // remove all assigned defects for this user.
+            _context.Defects.RemoveRange(user.Defects.Where(x => x.ClosedAt == null));
+            user.Defects = null;
             user.Role = null;
             user.IsRegistered = false;
             _context.Users.Update(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
     }

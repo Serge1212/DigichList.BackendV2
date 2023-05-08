@@ -1,18 +1,21 @@
 ﻿using DigichList.Core.Entities;
-using DigichList.Core.Repositories.Base;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DigichList.Core.Repositories
 {
-    public interface IDefectRepository : IRepository<Defect, int>
+    /// <summary>
+    /// The dedicated repo for working with defects.
+    /// </summary>
+    public interface IDefectRepository
     {
+        //TODO: comment.
         public IEnumerable<Defect> GetAllAsNoTracking();
+        //TODO: comment.
         public Task<Defect> GetDefectWithAssignedDefectByIdAsync(int defectId);
+        //TODO: comment.
         public Task DeleteRangeAsync(int[] idArr);
+        //TODO: comment.
         public IEnumerable<Defect> GetRangeByIds(int[] idArr);
-        public Task<AssignedDefect> GetAssignedDefectAsync(int userId, int defectId);
-        public Task SaveAssignedDefect(AssignedDefect assignedDefect);
-        public IEnumerable<Defect> GetDefectsWithUsersAndAssignedDefects();
     }
 }

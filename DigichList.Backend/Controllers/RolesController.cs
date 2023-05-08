@@ -86,7 +86,7 @@ namespace DigichList.Backend.Controllers
                 return NotFound("Cannot assign a role to nonexistent user");
             }
 
-            if(await _repo.AssignRole(user, roleId))
+            if(await _repo.AssignRoleAsync(user, roleId))
             {
                 await _botNotificationSender.NotifyUserGotRole(user.TelegramId, user?.Role?.Name);
                 return Ok();
@@ -107,7 +107,7 @@ namespace DigichList.Backend.Controllers
                 return BadRequest("User does not have any role");
             }
             string roleName = user.Role.Name;
-            var ok = _repo.RemoveRoleFromUser(user);
+            var ok = _repo.RemoveRoleFromUserAsync(user);
             if (ok)
             {
                 try

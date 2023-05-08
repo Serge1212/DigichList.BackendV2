@@ -1,11 +1,16 @@
 ﻿using DigichList.Core.Entities;
-using DigichList.Core.Repositories.Base;
 using System.Threading.Tasks;
 
 namespace DigichList.Core.Repositories
 {
+    /// <summary>
+    /// The dedicated repo for working with defect image.
+    /// </summary>
     public interface IDefectImageRepository
     {
-        public Task<DefectImage> SaveImageAsStringByteArray(string path);
+        /// <summary>
+        /// Saves the defect image as byte string.
+        /// </summary>
+        public Task<DefectImage> SaveImage(string path);
     }
 }

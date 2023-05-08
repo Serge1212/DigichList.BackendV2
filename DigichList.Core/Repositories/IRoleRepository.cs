@@ -1,15 +1,31 @@
 ﻿using DigichList.Core.Entities;
-using DigichList.Core.Repositories.Base;
 using System.Threading.Tasks;
 
 namespace DigichList.Core.Repositories
 {
-    public interface IRoleRepository : IRepository<Role, int>
+    /// <summary>
+    /// The dedicated repo for working with user roles.
+    /// </summary>
+    public interface IRoleRepository
     {
-        public Task<Role> GetRoleByNameAsync(string roleName);
+        /// <summary>
+        /// Returns the role by specified identifier.
+        /// </summary>
+        Task<Role> GetByIdAsync(int id);
 
-        public Task<bool> AssignRole(User user, int roleId);
+        /// <summary>
+        /// Returns the role by specified name.
+        /// </summary>
+        public Task<Role> GetRoleByNameAsync(string roleName); //TODO: Id maybe?
 
-        public bool RemoveRoleFromUser(User user);
+        /// <summary>
+        /// Assignes the role for specified user.
+        /// </summary>
+        public Task<bool> AssignRoleAsync(User user, int roleId);
+
+        /// <summary>
+        /// Removes the role from specified user.
+        /// </summary>
+        public Task<bool> RemoveRoleFromUserAsync(User user);
     }
 }

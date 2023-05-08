@@ -1,65 +1,78 @@
 ﻿using DigichList.Core.Entities;
 using DigichList.Core.Repositories;
-using DigichList.Infrastructure.Data;
-using DigichList.Infrastructure.Extensions;
-using DigichList.Infrastructure.Repositories.Base;
+using DigichList.Infrastructure.Context;
 using DigichList.TelegramNotifications.BotNotifications;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DigichList.Infrastructure.Repositories
 {
-    public class UserRepository : Repository<User, int>, IUserRepository
+    /// <summary>
+    /// Returns the user by specified chat identifier (the unique identifier in telegram).
+    /// </summary>
+    public class UserRepository : IUserRepository
     {
-        private readonly IBotNotificationSender _botNotificationSender;
-        public UserRepository(DigichListContext context, IBotNotificationSender botNotificationSender = null) : base(context) 
+        readonly IBotNotificationSender _botNotificationSender;
+        readonly DigichlistContext _context;
+
+        public UserRepository(DigichlistContext context, IBotNotificationSender botNotificationSender = null)
         {
+            _context = context;
             _botNotificationSender = botNotificationSender;
         }
 
+        /// <inheritdoc />
+        public async Task<User> GetUserByChatIdAsync(int chatId) => await _context.Users.FirstOrDefaultAsync(x => x.ChatId == chatId);
 
-        public async Task<User> GetUserByTelegramIdAsync(int telegramId)
+        /// <inheritdoc />
+        public async Task<User> GetUserByChatIdWithRoleAsync(int telegramId) =>
+            await _context.Users
+            .Include(r => r.Role)
+            .FirstOrDefaultAsync(x => x.ChatId == telegramId);
+
+        /// <inheritdoc />
+        public IEnumerable<User> GetUsersWithRoles() => _context.Users.Include(r => r.Role);
+
+        /// <inheritdoc />
+        public IEnumerable<User> GetTechnicians() //TODO: GetUsersByRoleName(string roleName)
         {
-            return await _context.Users.GetUserByTelegramId(telegramId);
+            return _context.Users
+                .Include(r => r.Role)
+                .Where(x => x.Role.Name == "Technician");
         }
 
-        public async Task<User> GetUserByTelegramIdWithRoleAsync(int telegramId)
-        {
-            return await _context.Users.GetUserByTelegramIdWithRole(telegramId);
-        }
-
-        public IEnumerable<User> GetUsersWithRoles()
-        {
-            return _context.Users.GetUsersWithRoles();
-        }
-        public IEnumerable<User> GetTechnicians()
-        {
-            return _context.Users.GetTechnicians();
-        }
-
+        /// <inheritdoc />
         public async Task<User> GetUserWithRoleAsync(int id)
         {
-            return await _context.Users.GetUserByIdWithRole(id);
+            return await _context.Users.Include(r => r.Role)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public IEnumerable<User> GetUsersWithRolesAndAssignedDefects()
-        {
-            return _context.Users.GetUsersWithRolesAndAssignedDefects();
-        }
+        /// <inheritdoc />
+        public IEnumerable<User> GetUsersWithRolesAndAssignedDefects() =>
+            _context.Users
+                .Include(r => r.Role)
+                .Include(a => a.Defects);
 
-        public async Task<User> GetUserWithRolesAndAssignedDefectsByIdAsync(int id)
-        {
-            return await _context.Users.GetUserWithRolesAndAssignedDefectsByIdAsync(id);
-        }
+        /// <inheritdoc />
+        public async Task<User> GetUserWithRolesAndAssignedDefectsByIdAsync(int id) =>
+            await _context.Users
+                .Include(r => r.Role)
+                .Include(a => a.Defects)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
+        /// <inheritdoc />
         public async Task DeleteRangeAsync(int[] idArr)
         {
             var usersToDelete = GetRangeByIds(idArr);
             _context.RemoveRange(usersToDelete);
             await NotifyUsersTheyWereRemovedFromDatabase(usersToDelete);
-            await SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
+
+        /// <inheritdoc />
         public IEnumerable<User> GetRangeByIds(int[] idArr)
         {
             return _context.Users.Where(d => idArr.Contains(d.Id));
@@ -69,7 +82,7 @@ namespace DigichList.Infrastructure.Repositories
         {
             foreach(var u in usersToDelete)
             {
-                await _botNotificationSender.NotifyUserIsOrIsNotRegistered(u.TelegramId, false);
+                await _botNotificationSender.NotifyUserIsOrIsNotRegistered(u.ChatId, false);
             }
         }
     }
