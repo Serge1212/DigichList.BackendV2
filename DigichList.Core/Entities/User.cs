@@ -1,23 +1,56 @@
-﻿using DigichList.Core.Entities.Base;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DigichList.Core.Entities
 {
-    public class User : Entity
+    /// <summary>
+    /// The entity that represents the end-user info.
+    /// </summary>
+    public class User
     {
-        public int TelegramId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Username { get; set; }
-        public bool IsRegistered { get; set; } = false;
-        public int? RoleId { get; set; }
-        public Role Role { get; set; }
-        public List<Defect> Defects { get; set; } = new List<Defect>();
-        public List<AssignedDefect> AssignedDefects { get; set; } = new List<AssignedDefect>();
+        /// <summary>
+        /// The user's unique identifier.
+        /// </summary>
+        public int Id { get; set; }
 
-        public override string ToString()
-        {
-            return $"{FirstName} {LastName}";
-        }
+        /// <summary>
+        /// The telegram chat identifier.
+        /// </summary>
+        public long ChatId { get; set; }
+
+        /// <summary>
+        /// The user's first name.
+        /// </summary>
+        public string FirstName { get; set; }
+
+        /// <summary>
+        /// The user's last name.
+        /// </summary>
+        public string LastName { get; set; }
+
+        /// <summary>
+        /// The user's username.
+        /// </summary>
+        public string Username { get; set; }
+
+        /// <summary>
+        /// The flag that indicates that the user is registered or not.
+        /// </summary>
+        public bool IsRegistered { get; set; }
+
+        /// <summary>
+        /// The user's role.
+        /// Null when none.
+        /// </summary>
+        public int RoleId { get; set; }
+
+        /// <summary>
+        /// More info about related role.
+        /// </summary>
+        public Role Role { get; set; }
+
+        /// <summary>
+        /// The defects assigned to this user.
+        /// </summary>
+        public List<Defect> Defects { get; set; } = new List<Defect>();
     }
 }

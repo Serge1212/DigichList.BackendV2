@@ -1,25 +1,72 @@
-﻿using DigichList.Core.Entities.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace DigichList.Core.Entities
 {
-    public class Defect : Entity
+    /// <summary>
+    /// The defect entity. Contains information about any defect found.
+    /// </summary>
+    public class Defect
     {
-        [Required]
+        /// <summary>
+        /// The unique identifier of the defect.
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
+        /// The number of the room where the defect is spotted.
+        /// </summary>
         public int RoomNumber { get; set; }
-        [Required]
+
+        /// <summary>
+        /// The description of the defect.
+        /// </summary>
         public string Description { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        /// <summary>
+        /// The date the defect was created.
+        /// </summary>
+        public DateTime CreatedAt { get; set; }
+
+        /// <summary>
+        /// The name of the creator.
+        /// </summary>
+        public string CreatedBy { get; set; }
+
+        /// <summary>
+        /// The date and time the defect was closed.
+        /// </summary>
+        public DateTime? ClosedAt { get; set; }
+
+        /// <summary>
+        /// The date and time the defect status was changed.
+        /// </summary>
+        public DateTime? StatusChangedAt { get; set; }
+
+        /// <summary>
+        /// The status of the defect.
+        /// Null implies this defect was not assigned.
+        /// </summary>
+        public int Status { get; set; }
+
+        /// <summary>
+        /// The assigned worker identifier.
+        /// </summary>
         public int? UserId { get; set; }
-        public User Publisher { get; set; }
-        public AssignedDefect AssignedDefect { get; set; }
+
+        /// <summary>
+        /// More information about the assigned worker.
+        /// </summary>
+        public User? AssignedWorker { get; set; }
+
+        /// <summary>
+        /// The related images.
+        /// </summary>
         public List<DefectImage> DefectImages { get; set; } = new List<DefectImage>();
 
-        public override string ToString()
-        {
-            return $"Номер в готелі: {RoomNumber}. Опис дефекту: {Description}";
-        }
+        /// <summary>
+        /// The related ongoing tasks for this defect.
+        /// </summary>
+        public List<CommandTask>? CommandTasksInfo { get; set; }
     }
 }
