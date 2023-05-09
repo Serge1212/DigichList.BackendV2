@@ -2,6 +2,7 @@ using DigichList.Backend.Helpers;
 using DigichList.Backend.Middlewares;
 using DigichList.Backend.Options;
 using DigichList.Core.Repositories;
+using DigichList.Infrastructure.Context;
 using DigichList.Infrastructure.Data;
 using DigichList.Infrastructure.Repositories;
 using DigichList.Infrastructure.Seeders;
@@ -12,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
+
 namespace DigichList.Backend
 {
     public class Startup
@@ -35,7 +38,27 @@ namespace DigichList.Backend
             services.AddScoped<IAdminRepository, AdminRepository>();
             services.AddScoped<IBotNotificationSender, BotNotificationSender>();
             services.AddScoped<JwtService>();
-            services.AddDbContext<DigichListContext>();
+            services.AddDbContext<DigichlistContext>(options =>
+            {
+                var server = Environment.GetEnvironmentVariable("DIGICHLIST_SERVER", EnvironmentVariableTarget.User);
+                var database = Environment.GetEnvironmentVariable("DIGICHLIST_DATABASE", EnvironmentVariableTarget.User);
+                var username = Environment.GetEnvironmentVariable("DIGICHLIST_DB_USERNAME", EnvironmentVariableTarget.User);
+                var password = Environment.GetEnvironmentVariable("DIGICHLIST_DB_PASSWORD", EnvironmentVariableTarget.User);
+                var template = Environment.GetEnvironmentVariable("DIGICHLIST_DB_CONNECTION_TEMPLATE", EnvironmentVariableTarget.User);
+
+                var conString = string.Format(template!,
+                    server,
+                    database,
+                    username,
+                    password);
+
+                options.UseSqlServer(conString, ops =>
+                {
+                    ops
+                     .CommandTimeout(30)
+                     .EnableRetryOnFailure();
+                });
+            });
 
             var authOptionsCifiguration = Configuration.GetSection("Auth");
             services.Configure<AuthOptions>(authOptionsCifiguration);

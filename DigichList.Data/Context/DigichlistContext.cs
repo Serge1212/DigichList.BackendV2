@@ -9,6 +9,11 @@ namespace DigichList.Infrastructure.Context
     public class DigichlistContext : DbContext
     {
         /// <summary>
+        /// The db set that reflects the state of Admins table.
+        /// </summary>
+        public DbSet<Admin> Admins { get; set; }
+
+        /// <summary>
         /// The db set that reflects the state of Users table.
         /// </summary>
         public DbSet<User> Users { get; set; }

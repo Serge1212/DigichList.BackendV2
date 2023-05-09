@@ -31,6 +31,5 @@ namespace DigichList.Core.Entities
         /// The users that have this role.
         /// </summary>
         public List<User> Users { get; set; } = new List<User>();
-
     }
 }
