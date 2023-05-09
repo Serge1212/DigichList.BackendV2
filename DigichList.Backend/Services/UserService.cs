@@ -1,4 +1,5 @@
 ﻿using DigichList.Backend.Interfaces;
+using DigichList.Backend.ViewModel;
 using DigichList.Core.Entities;
 using DigichList.Core.Repositories;
 using DigichList.TelegramNotifications.BotNotifications;
@@ -30,7 +31,12 @@ namespace DigichList.Backend.Services
         public async Task<User> GetUserWithRoleAsync(int id) => await _userRepository.GetUserWithRoleAsync(id);
 
         /// <inheritdoc />
-        public async Task<List<User>> GetUsersWithRolesAsync() => await _userRepository.GetUsersWithRolesAsync();
+        public async Task<List<UserViewModel>> GetUsersWithRolesAsync()
+        {
+            var users = await _userRepository.GetUsersWithRolesAsync();
+            var mappedUsers = users.Select(u => UserViewModel.ToViewModel(u)).ToList();
+            return mappedUsers;
+        }
 
         /// <inheritdoc />
         public async Task<List<User>> GetTechniciansAsync() => (await _userRepository.GetUsersWithRolesAsync()).Where(u => u.Role?.Name == "Technician").ToList();

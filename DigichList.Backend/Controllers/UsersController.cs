@@ -22,10 +22,10 @@ namespace DigichList.Backend.Controllers
 
         [HttpGet]
         [Route("api/[controller]")]
-        public IActionResult GetAllAsync()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var users = _service.GetUsersWithRolesAsync();
-            return Ok(_mapper.Map<IEnumerable<UserViewModel>>(users));
+            var users = await _service.GetUsersWithRolesAsync();
+            return Ok(users);
         }
 
         [HttpGet]

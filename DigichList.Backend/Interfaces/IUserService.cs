@@ -1,4 +1,5 @@
-﻿using DigichList.Core.Entities;
+﻿using DigichList.Backend.ViewModel;
+using DigichList.Core.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace DigichList.Backend.Interfaces
         /// <summary>
         /// Returns all users with roles.
         /// </summary>
-        public Task<List<User>> GetUsersWithRolesAsync();
+        public Task<List<UserViewModel>> GetUsersWithRolesAsync();
 
         /// <summary>
         /// Returns all users with Technician role.
