@@ -3,12 +3,11 @@ using DigichList.Backend.Middlewares;
 using DigichList.Backend.Options;
 using DigichList.Core.Repositories;
 using DigichList.Infrastructure.Context;
-using DigichList.Infrastructure.Data;
 using DigichList.Infrastructure.Repositories;
-using DigichList.Infrastructure.Seeders;
 using DigichList.TelegramNotifications.BotNotifications;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -46,7 +45,7 @@ namespace DigichList.Backend
                 var password = Environment.GetEnvironmentVariable("DIGICHLIST_DB_PASSWORD", EnvironmentVariableTarget.User);
                 var template = Environment.GetEnvironmentVariable("DIGICHLIST_DB_CONNECTION_TEMPLATE", EnvironmentVariableTarget.User);
 
-                var conString = string.Format(template!,
+                var conString = string.Format(template,
                     server,
                     database,
                     username,
@@ -81,6 +80,7 @@ namespace DigichList.Backend
 
             app.UseRouting();
 
+            //TODO: move to env variables, use ',' delimiter.
             app.UseCors(x => x
             .WithOrigins(
                 "https://localhost:3000",
