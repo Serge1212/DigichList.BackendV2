@@ -72,7 +72,7 @@ namespace DigichList.Backend.Services
         /// <inheritdoc />
         public async Task<(bool, string)> RemoveRoleFromUserAsync(int userId)
         {
-            var user = await _userRepository.GetUserWithRolesAndAssignedDefectsByIdAsync(userId);
+            var user = await _userRepository.GetUserWithRolesAndDefectsByIdAsync(userId);
 
             if (user == null)
             {

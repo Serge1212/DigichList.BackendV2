@@ -24,11 +24,19 @@ namespace DigichList.Core.Repositories
         /// </summary>
         public Task DeleteAsync(Defect defect);
 
-        //TODO: comment.
+        /// <summary>
+        /// Returns the defect by specified identifier.
+        /// </summary>
         public Task<Defect> GetByIdAsync(int defectId);
-        //TODO: comment.
+
+        /// <summary>
+        /// Deletes the specified defects by specified identifiers.
+        /// </summary>
         public Task DeleteRangeAsync(int[] idArr);
-        //TODO: comment.
+
+        /// <summary>
+        /// Returns the range of defects by specified identifiers.
+        /// </summary>
         public IEnumerable<Defect> GetRangeByIds(int[] idArr);
     }
 }

@@ -26,9 +26,6 @@ namespace DigichList.Infrastructure.Repositories
         public async Task<Role> GetByIdAsync(int id) => await _context.Roles.FindAsync(id);
 
         /// <inheritdoc />
-        public async Task<Role> GetRoleByNameAsync(string roleName) => await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName); //TODO: Id only maybe?
-
-        /// <inheritdoc />
         public async Task UpdateAsync(Role role)
         {
             _context.Roles.Update(role);

@@ -7,28 +7,28 @@ namespace DigichList.TelegramNotifications.BotNotifications
 {
     public class BotNotificationSender : IBotNotificationSender
     {
-        public async Task NotifyUserIsOrIsNotRegistered(int telegramId, bool registrationStatus)
+        public async Task NotifyUserIsOrIsNotRegistered(long chatId, bool registrationStatus)
         {
             await (registrationStatus ?
-                SendMessageAsync(telegramId, UserGotRegistered) : 
-                SendMessageAsync(telegramId, UserWasNotRegistered));
+                SendMessageAsync(chatId, UserGotRegistered) :
+                SendMessageAsync(chatId, UserWasNotRegistered));
         }
-        public async Task NotifyUserWasGivenWithDefect(int telegramId, Defect defect)
+        public async Task NotifyUserWasGivenWithDefect(long chatId, Defect defect)
         {
             var message = string.Format(UserGotDefect, defect.ToString());
-            await SendMessageAsync(telegramId, message);
+            await SendMessageAsync(chatId, message);
         }
 
-        public async Task NotifyUserHisDefectGotApproved(int telegramId, string defectDescription)
+        public async Task NotifyUserHisDefectGotApproved(long chatId, string defectDescription)
         {
             var message = string.Format(UsersDefectGotApproved, defectDescription);
-            await SendMessageAsync(telegramId, message);
+            await SendMessageAsync(chatId, message);
         }
 
-        public async Task NotifyUserGotRole(int telegramId, string roleName)
+        public async Task NotifyUserGotRole(long chatId, string roleName)
         {
             var message = GetMessageForSpecifiedRole(roleName, UserGotRole);
-            await SendMessageAsync(telegramId, message);
+            await SendMessageAsync(chatId, message);
         }
 
         private string GetMessageForSpecifiedRole(string roleName, string message)
@@ -44,10 +44,10 @@ namespace DigichList.TelegramNotifications.BotNotifications
             return string.Empty;
         }
 
-        public async Task NotifyUserLostRole(int telegramId, string roleName)
+        public async Task NotifyUserLostRole(long chatId, string roleName)
         {
             var message = GetMessageForSpecifiedRole(roleName, "На жаль, ви втратили наступні повноваження:\n");
-            await SendMessageAsync(telegramId, message);
+            await SendMessageAsync(chatId, message);
         }
     }
 }

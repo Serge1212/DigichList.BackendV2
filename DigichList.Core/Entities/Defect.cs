@@ -57,16 +57,11 @@ namespace DigichList.Core.Entities
         /// <summary>
         /// More information about the assigned worker.
         /// </summary>
-        public User? AssignedWorker { get; set; }
+        public User AssignedWorker { get; set; }
 
         /// <summary>
         /// The related images.
         /// </summary>
         public List<DefectImage> DefectImages { get; set; } = new List<DefectImage>();
-
-        /// <summary>
-        /// The related ongoing tasks for this defect.
-        /// </summary>
-        public List<CommandTask>? CommandTasksInfo { get; set; }
     }
 }

@@ -24,15 +24,6 @@ namespace DigichList.Infrastructure.Repositories
         public async Task<User> GetByIdAsync(int id) => await _context.Users.FindAsync(id);
 
         /// <inheritdoc />
-        public async Task<User> GetUserByChatIdAsync(int chatId) => await _context.Users.FirstOrDefaultAsync(x => x.ChatId == chatId);
-
-        /// <inheritdoc />
-        public async Task<User> GetUserByChatIdWithRoleAsync(int telegramId) =>
-            await _context.Users
-            .Include(r => r.Role)
-            .FirstOrDefaultAsync(x => x.ChatId == telegramId);
-
-        /// <inheritdoc />
         public async Task<List<User>> GetUsersWithRolesAsync() => await _context.Users.Include(r => r.Role).ToListAsync();
 
         /// <inheritdoc />
@@ -43,13 +34,7 @@ namespace DigichList.Infrastructure.Repositories
         }
 
         /// <inheritdoc />
-        public IEnumerable<User> GetUsersWithRolesAndAssignedDefects() =>
-            _context.Users
-                .Include(r => r.Role)
-                .Include(a => a.Defects);
-
-        /// <inheritdoc />
-        public async Task<User> GetUserWithRolesAndAssignedDefectsByIdAsync(int id) =>
+        public async Task<User> GetUserWithRolesAndDefectsByIdAsync(int id) =>
             await _context.Users
                 .Include(r => r.Role)
                 .Include(a => a.Defects)

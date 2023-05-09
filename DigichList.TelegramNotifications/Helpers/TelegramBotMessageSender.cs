@@ -5,9 +5,9 @@ namespace DigichList.TelegramNotifications.Helpers
 {
     internal static class TelegramBotMessageSender
     {
-        public static async Task SendMessageAsync(int telegramId, string text)
+        public static async Task SendMessageAsync(long chatId, string text)
         {
-            await BotClient.Bot.SendTextMessageAsync(telegramId, text);
+            await BotClient.Bot.SendTextMessageAsync(chatId, text);
         }
     }
 }

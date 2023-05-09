@@ -20,11 +20,6 @@ namespace DigichList.Core.Repositories
         Task<Role> GetByIdAsync(int id);
 
         /// <summary>
-        /// Returns the role by specified name.
-        /// </summary>
-        public Task<Role> GetRoleByNameAsync(string roleName); //TODO: Id maybe?
-
-        /// <summary>
         /// Updates the specified role.
         /// </summary>
         public Task UpdateAsync(Role role);

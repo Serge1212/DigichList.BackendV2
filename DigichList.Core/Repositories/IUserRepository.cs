@@ -15,16 +15,6 @@ namespace DigichList.Core.Repositories
         public Task<User> GetByIdAsync(int id);
 
         /// <summary>
-        /// Returns the user by specified chat identifier (the unique identifier in telegram).
-        /// </summary>
-        public Task<User> GetUserByChatIdAsync(int chatId);
-
-        /// <summary>
-        /// Returns the user by specified chat identifier (the unique identifier in telegram) grabbing the related role.
-        /// </summary>
-        public Task<User> GetUserByChatIdWithRoleAsync(int chatId);
-
-        /// <summary>
         /// Returns all users with related roles.
         /// </summary>
         public Task<List<User>> GetUsersWithRolesAsync();
@@ -34,11 +24,15 @@ namespace DigichList.Core.Repositories
         /// </summary>
         public Task<List<User>> GetRangeByIdsAsync(int[] idArr);
 
-        public IEnumerable<User> GetUsersWithRolesAndAssignedDefects(); //TODO: consider delete
+        /// <summary>
+        /// Returns the user with role by specified user identifier.
+        /// </summary>
+        public Task<User> GetUserWithRoleAsync(int id);
 
-        public Task<User> GetUserWithRoleAsync(int id); //TODO: why 2 methods with chatId and identity? consider delete.
-
-        public Task<User> GetUserWithRolesAndAssignedDefectsByIdAsync(int id); //TODO: consider delete
+        /// <summary>
+        /// Returns the user with role and defects by specified user identifier.
+        /// </summary>
+        public Task<User> GetUserWithRolesAndDefectsByIdAsync(int id);
 
         /// <summary>
         /// Adds a brand new user.
