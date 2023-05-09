@@ -15,7 +15,7 @@ namespace DigichList.Backend.Mappers
                 .ForMember(x => x.Publisher, 
                     y => y.MapFrom(src => src.Publisher.ToString()))
 
-                .ForMember(x => x.UserThatFixesDefect, 
+                .ForMember(x => x.Assignee, 
                     y => y.MapFrom(src => src.AssignedDefect.AssignedWorker.ToString()))
 
                 .ForMember(x => x.StatusChangedAt,
@@ -23,7 +23,7 @@ namespace DigichList.Backend.Mappers
                     src.AssignedDefect.StatusChangedAt.Value.ToShortDateString() :
                     "N/A"))
 
-                .ForMember(x => x.DefectStatus, y => 
+                .ForMember(x => x.Status, y => 
                 {
                     y.MapFrom(src => src.AssignedDefect.Status.ToString());
                     y.NullSubstitute("Not Assigned");

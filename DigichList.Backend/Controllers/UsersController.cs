@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
-using DigichList.Backend.Helpers;
+using DigichList.Backend.Interfaces;
 using DigichList.Backend.ViewModel;
 using DigichList.Core.Entities;
-using DigichList.Core.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DigichList.Backend.Controllers
@@ -13,96 +11,107 @@ namespace DigichList.Backend.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository _repo;
+        private readonly IUserService _service;
         private readonly IMapper _mapper;
 
-        public UsersController(IUserRepository repo,
-            IMapper mapper)
+        public UsersController(IUserService service, IMapper mapper)
         {
-            _repo = repo;
+            _service = service;
             _mapper = mapper;
         }
 
         [HttpGet]
         [Route("api/[controller]")]
-        public IActionResult GetUsers()
+        public IActionResult GetAllAsync()
         {
-            var users = _repo.GetUsersWithRoles();
+            var users = _service.GetUsersWithRolesAsync();
             return Ok(_mapper.Map<IEnumerable<UserViewModel>>(users));
         }
 
         [HttpGet]
-        [Route("api/[controller]/GetRegisteredUsers")]
-        public IActionResult GetRegisteredUsers()
+        [Route("api/[controller]/getRegisteredUsers")]
+        public async Task<IActionResult> GetRegisteredUsersAsync()
         {
-            var users = _repo.GetUsersWithRoles().Where(x => x.IsRegistered);
+            var users = await _service.GetRegisteredUsersAsync();
             return Ok(_mapper.Map<IEnumerable<UserViewModel>>(users));
         }
 
         [HttpGet]
-        [Route("api/[controller]/GetUnregisteredUsers")]
-        public IActionResult GetUnregisteredUsers()
+        [Route("api/[controller]/getUnregisteredUsers")]
+        public async Task<IActionResult> GetUnregisteredUsersAsync()
         {
-            var users = _repo.GetUsersWithRoles().Where(x => !x.IsRegistered);
+            var users = await _service.GetUnregisteredUsersAsync();
             return Ok(_mapper.Map<IEnumerable<UserViewModel>>(users));
         }
 
         [HttpGet]
         [Route("api/[controller]/{id}")]
-        public async Task<IActionResult> GetUser(int id)
+        public async Task<IActionResult> GetAsync(int id)
         {
-            var user = await _repo.GetUserWithRoleAsync(id);
+            var user = await _service.GetUserWithRoleAsync(id);
             return user != null ?
                 Ok(_mapper.Map<UserViewModel>(user)) :
-                NotFound($"User with id of {id} was not found");
+                NotFound();
         }
 
         [HttpGet]
-        [Route("api/[controller]/GetTechnicians")]
-        public IActionResult GetTechnicians()
+        [Route("api/[controller]/getTechnicians")]
+        public async Task<IActionResult> GetTechniciansAsync()
         {
-            var technicians = _repo.GetTechnicians();
+            var technicians = await _service.GetTechniciansAsync();
             return technicians != null ?
                 Ok(_mapper.Map<IEnumerable<TechnicianViewModel>>(technicians)) :
-                NotFound("No technicians available");
+                NotFound();
 
         }
 
         [HttpPost]
         [Route("api/[controller]")]
-        public async Task<IActionResult> CreateUser(User user)
+        public async Task<IActionResult> AddAsync(User user)
         {
-            await _repo.AddAsync(user);
+            await _service.AddAsync(user);
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
         [HttpPost]
-        [Route("api/[controller]/UpdateUser")]
-        public async Task<IActionResult> UpdateUser([FromBody] User user)
+        [Route("api/[controller]/updateUser")]
+        public async Task<IActionResult> UpdateAsync([FromBody] User user)
         {
-            if (ModelState.IsValid)
+            var result = await _service.UpdateAsync(user);
+
+            if(result)
             {
-                await CommonControllerMethods.UpdateAsync(user, _repo);
+                return Ok();
             }
+
             return BadRequest();
         }
 
         [HttpDelete]
-        [Route("api/[controller]/DeleteUser/{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        [Route("api/[controller]/deleteUser/{id}")]
+        public async Task<IActionResult> DeleteOneAsync(int id)
         {
-           return await CommonControllerMethods.DeleteAsync<User, IUserRepository>(id, _repo);
+            var result = await _service.DeleteOneAsync(id);
+
+            if (result)
+            {
+                return Ok();
+            }
+
+            return NotFound();
         }
 
-        [HttpDelete("DeleteUsers")]
-        public async Task<IActionResult> DeleteUsers([FromQuery(Name = "idArr")] int[] idArr)
+        [HttpDelete("deleteUsers")]
+        public async Task<IActionResult> DeleteManyAsync([FromQuery(Name = "idArr")] int[] idArr)
         {
-            if (idArr.Length < 1)
+            var result = await _service.DeleteManyAsync(idArr);
+
+            if (result)
             {
-                return NotFound("There wasn't any id provided to delete");
+                return Ok();
             }
-            await _repo.DeleteRangeAsync(idArr);
-            return Ok();
+
+            return NotFound();
         }
     }
 }

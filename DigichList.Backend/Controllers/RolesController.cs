@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
-using DigichList.Backend.Helpers;
+using DigichList.Backend.Interfaces;
 using DigichList.Backend.ViewModel;
 using DigichList.Core.Entities;
-using DigichList.Core.Repositories;
-using DigichList.TelegramNotifications.BotNotifications;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,116 +11,69 @@ namespace DigichList.Backend.Controllers
     [ApiController]
     public class RolesController : ControllerBase
     {
-        private readonly IRoleRepository _repo;
-        private readonly IUserRepository _userRepo;
+        private readonly IRoleService _service;
         private readonly IMapper _mapper;
-        private readonly IBotNotificationSender _botNotificationSender;
 
-        public RolesController(IRoleRepository repo,
-            IUserRepository userRepo,
-            IMapper mapper,
-            IBotNotificationSender botNotificationSender)
+        public RolesController(
+            IRoleService service,
+            IMapper mapper)
         {
-            _repo = repo;
-            _userRepo = userRepo;
+            _service = service;
             _mapper = mapper;
-            _botNotificationSender = botNotificationSender;
         }
 
         [HttpGet]
         [Route("api/[controller]")]
-        public async Task<IActionResult> GetRoles()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var roles = await _repo.GetAllAsync();
+            var roles = await _service.GetAllAsync();
             return Ok(_mapper.Map<IEnumerable<RoleViewModel>>(roles));
         }
 
         [HttpGet]
         [Route("api/[controller]/{id}")]
-        public async Task<IActionResult> GetRole(int id)
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var role = await _repo.GetByIdAsync(id);
+            var role = await _service.GetByIdAsync(id);
             return role != null ?
                 Ok(_mapper.Map<ExtendedRoleViewModel>(role)) :
-                NotFound($"Role with id of {id} was not found");
+                NotFound();
         }
 
         [HttpPost]
-        [Route("api/[controller]")]
-        public async Task<IActionResult> CreateRole(Role role)
+        [Route("api/[controller]/updateRole")]
+        public async Task<IActionResult> UpdateAsync([FromBody] Role role)
         {
-            await _repo.AddAsync(role);
-            return CreatedAtAction("GetRole", new { id = role.Id }, role);
-        }
-
-        [HttpDelete]
-        [Route("api/[controller]/{id}")]
-        public async Task<IActionResult> DeleteRole(int id)
-        {
-            return await CommonControllerMethods
-                .DeleteAsync<Role, IRoleRepository>(id, _repo);
+            await _service.UpdateAsync(role);
+            return Ok();
         }
 
         [HttpPost]
-        [Route("api/[controller]/UpdateRole")]
-        public async Task<IActionResult> UpdateRole([FromBody] Role role)
+        [Route("api/[controller]/assignRole")]
+        public async Task<IActionResult> AssignAsync(int userId, int roleId)
         {
-            if (ModelState.IsValid)
-            {
-                return await CommonControllerMethods.UpdateAsync(role, _repo);
-            }
-            return BadRequest();
-            
-        }
+            var (isSuccess, message) = await _service.AssignAsync(userId, roleId);
 
-        [HttpPost]
-        [Route("api/[controller]/AssignRole")]
-        public async Task<IActionResult> AssignRole(int userId, int roleId)
-        {
-            var user = await _userRepo.GetUserWithRoleAsync(userId);
-            if(user == null)
+            if(isSuccess)
             {
-                return NotFound("Cannot assign a role to nonexistent user");
-            }
-
-            if(await _repo.AssignRoleAsync(user, roleId))
-            {
-                await _botNotificationSender.NotifyUserGotRole(user.TelegramId, user?.Role?.Name);
                 return Ok();
             }
 
-            return NotFound("User or role was not found");
-
+            return BadRequest(message);
         }
 
         [HttpPost]
-        [Route("api/[controller]/RemoveRoleFromUser")]
-        public async Task<IActionResult> RemoveRoleFromUser(int userId)
+        [Route("api/[controller]/removeRoleFromUser")]
+        public async Task<IActionResult> RemoveRoleFromUserAsync(int userId)
         {
-            var user = await _userRepo.GetUserWithRolesAndAssignedDefectsByIdAsync(userId);
+            var (isSuccess, message) = await _service.RemoveRoleFromUserAsync(userId);
             
-            if(user?.Role?.Name == null)
+            if (isSuccess)
             {
-                return BadRequest("User does not have any role");
-            }
-            string roleName = user.Role.Name;
-            var ok = _repo.RemoveRoleFromUserAsync(user);
-            if (ok)
-            {
-                try
-                {
-                    await _botNotificationSender.NotifyUserLostRole(user.TelegramId, roleName);
-                }
-                catch(Exception ex)
-                {
-                    return Ok("Cound not send a message to user in telegram " + ex.Message);
-                }
                 return Ok();
             }
-            else
-            {
-                return NotFound($"User with id of {userId} was not found");
-            }
+
+            return BadRequest(message);
         }
 
     }

@@ -59,7 +59,7 @@ namespace DigicnList.Backend.Tests
 
             //Act  
 
-            var data = await controller.DeleteDefect(id);
+            var data = await controller.DeleteAsync(id);
 
             //Assert  
 

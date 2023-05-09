@@ -1,4 +1,5 @@
 ﻿using DigichList.Core.Entities;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DigichList.Core.Repositories
@@ -9,6 +10,11 @@ namespace DigichList.Core.Repositories
     public interface IRoleRepository
     {
         /// <summary>
+        /// Returns all roles.
+        /// </summary>
+        Task<List<Role>> GetAllAsync();
+
+        /// <summary>
         /// Returns the role by specified identifier.
         /// </summary>
         Task<Role> GetByIdAsync(int id);
@@ -17,6 +23,11 @@ namespace DigichList.Core.Repositories
         /// Returns the role by specified name.
         /// </summary>
         public Task<Role> GetRoleByNameAsync(string roleName); //TODO: Id maybe?
+
+        /// <summary>
+        /// Updates the specified role.
+        /// </summary>
+        public Task UpdateAsync(Role role);
 
         /// <summary>
         /// Assignes the role for specified user.

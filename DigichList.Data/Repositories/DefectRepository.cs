@@ -21,10 +21,13 @@ namespace DigichList.Infrastructure.Repositories
         }
 
         /// <inheritdoc />
-        public IEnumerable<Defect> GetAllAsNoTracking() => _context.Defects.AsNoTracking();
+        public List<Defect> GetAll() =>
+            _context.Defects
+            .Include(u => u.AssignedWorker)
+            .ToList();
 
         /// <inheritdoc />
-        public async Task<Defect> GetDefectWithAssignedDefectByIdAsync(int defectId) =>
+        public async Task<Defect> GetByIdAsync(int defectId) =>
             await _context.Defects
                  .Include(w => w.AssignedWorker)
                  .FirstOrDefaultAsync(x => x.Id == defectId);
@@ -43,10 +46,24 @@ namespace DigichList.Infrastructure.Repositories
         }
 
         /// <inheritdoc />
+        public async Task UpdateAsync(Defect defect)
+        {
+            _context.Defects.Update(defect);
+            await _context.SaveChangesAsync();
+        }
+
+        /// <inheritdoc />
         public async Task DeleteRangeAsync(int[] idArr)
         {
             var defectsToDelete = GetRangeByIds(idArr);
             _context.RemoveRange(defectsToDelete);
+            await _context.SaveChangesAsync();
+        }
+
+        /// <inheritdoc />
+        public async Task DeleteAsync(Defect defect)
+        {
+            _context.Defects.Remove(defect);
             await _context.SaveChangesAsync();
         }
     }

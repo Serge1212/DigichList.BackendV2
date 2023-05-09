@@ -2,6 +2,7 @@
 using DigichList.Core.Repositories;
 using DigichList.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,10 +20,20 @@ namespace DigichList.Infrastructure.Repositories
         }
 
         /// <inheritdoc />
+        public async Task<List<Role>> GetAllAsync() => await _context.Roles.ToListAsync();
+
+        /// <inheritdoc />
         public async Task<Role> GetByIdAsync(int id) => await _context.Roles.FindAsync(id);
 
         /// <inheritdoc />
         public async Task<Role> GetRoleByNameAsync(string roleName) => await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName); //TODO: Id only maybe?
+
+        /// <inheritdoc />
+        public async Task UpdateAsync(Role role)
+        {
+            _context.Roles.Update(role);
+            await _context.SaveChangesAsync();
+        }
 
         /// <inheritdoc />
         public async Task<bool> AssignRoleAsync(User user, int roleId)
@@ -70,6 +81,5 @@ namespace DigichList.Infrastructure.Repositories
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
-
     }
 }

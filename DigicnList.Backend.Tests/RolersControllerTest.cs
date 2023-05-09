@@ -50,7 +50,7 @@ namespace DigicnList.Backend.Tests
             var controller = new RolesController(_repo.Object, _userRepo.Object, _mapper, _iBotNotificationSender.Object );
 
             // Act
-            var result = await controller.GetRoles();
+            var result = await controller.GetAllAsync();
 
             // Assert
             var viewResult = Assert.IsType<OkObjectResult>(result);

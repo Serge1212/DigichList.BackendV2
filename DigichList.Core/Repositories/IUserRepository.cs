@@ -10,6 +10,11 @@ namespace DigichList.Core.Repositories
     public interface IUserRepository
     {
         /// <summary>
+        /// Returns the user by specified identifier.
+        /// </summary>
+        public Task<User> GetByIdAsync(int id);
+
+        /// <summary>
         /// Returns the user by specified chat identifier (the unique identifier in telegram).
         /// </summary>
         public Task<User> GetUserByChatIdAsync(int chatId);
@@ -20,11 +25,14 @@ namespace DigichList.Core.Repositories
         public Task<User> GetUserByChatIdWithRoleAsync(int chatId);
 
         /// <summary>
-        /// Gets all users with related roles.
+        /// Returns all users with related roles.
         /// </summary>
-        public IEnumerable<User> GetUsersWithRoles();
+        public Task<List<User>> GetUsersWithRolesAsync();
 
-        public IEnumerable<User> GetTechnicians(); //TODO: consider delete
+        /// <summary>
+        /// Returns users by specified identifiers.
+        /// </summary>
+        public Task<List<User>> GetRangeByIdsAsync(int[] idArr);
 
         public IEnumerable<User> GetUsersWithRolesAndAssignedDefects(); //TODO: consider delete
 
@@ -33,8 +41,23 @@ namespace DigichList.Core.Repositories
         public Task<User> GetUserWithRolesAndAssignedDefectsByIdAsync(int id); //TODO: consider delete
 
         /// <summary>
+        /// Adds a brand new user.
+        /// </summary>
+        public Task AddAsync(User user);
+
+        /// <summary>
+        /// Updates the specified user.
+        /// </summary>
+        public Task UpdateAsync(User user);
+
+        /// <summary>
+        /// Deletes one specified user.
+        /// </summary>
+        public Task DeleteOneAsync(User user);
+
+        /// <summary>
         /// Deletes the specified users.
         /// </summary>
-        public Task DeleteRangeAsync(int[] idArr);
+        public Task DeleteRangeAsync(IEnumerable<User> users);
     }
 }

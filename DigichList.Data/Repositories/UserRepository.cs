@@ -1,7 +1,6 @@
 ﻿using DigichList.Core.Entities;
 using DigichList.Core.Repositories;
 using DigichList.Infrastructure.Context;
-using DigichList.TelegramNotifications.BotNotifications;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +13,15 @@ namespace DigichList.Infrastructure.Repositories
     /// </summary>
     public class UserRepository : IUserRepository
     {
-        readonly IBotNotificationSender _botNotificationSender;
         readonly DigichlistContext _context;
 
-        public UserRepository(DigichlistContext context, IBotNotificationSender botNotificationSender = null)
+        public UserRepository(DigichlistContext context)
         {
             _context = context;
-            _botNotificationSender = botNotificationSender;
         }
+
+        /// <inheritdoc />
+        public async Task<User> GetByIdAsync(int id) => await _context.Users.FindAsync(id);
 
         /// <inheritdoc />
         public async Task<User> GetUserByChatIdAsync(int chatId) => await _context.Users.FirstOrDefaultAsync(x => x.ChatId == chatId);
@@ -33,15 +33,7 @@ namespace DigichList.Infrastructure.Repositories
             .FirstOrDefaultAsync(x => x.ChatId == telegramId);
 
         /// <inheritdoc />
-        public IEnumerable<User> GetUsersWithRoles() => _context.Users.Include(r => r.Role);
-
-        /// <inheritdoc />
-        public IEnumerable<User> GetTechnicians() //TODO: GetUsersByRoleName(string roleName)
-        {
-            return _context.Users
-                .Include(r => r.Role)
-                .Where(x => x.Role.Name == "Technician");
-        }
+        public async Task<List<User>> GetUsersWithRolesAsync() => await _context.Users.Include(r => r.Role).ToListAsync();
 
         /// <inheritdoc />
         public async Task<User> GetUserWithRoleAsync(int id)
@@ -64,26 +56,34 @@ namespace DigichList.Infrastructure.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
 
         /// <inheritdoc />
-        public async Task DeleteRangeAsync(int[] idArr)
+        public async Task<List<User>> GetRangeByIdsAsync(int[] idArr) => await _context.Users.Where(d => idArr.Contains(d.Id)).ToListAsync();
+
+        /// <inheritdoc />
+        public async Task UpdateAsync(User user)
         {
-            var usersToDelete = GetRangeByIds(idArr);
-            _context.RemoveRange(usersToDelete);
-            await NotifyUsersTheyWereRemovedFromDatabase(usersToDelete);
+            _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
 
         /// <inheritdoc />
-        public IEnumerable<User> GetRangeByIds(int[] idArr)
+        public async Task AddAsync(User user)
         {
-            return _context.Users.Where(d => idArr.Contains(d.Id));
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
         }
 
-        private async Task NotifyUsersTheyWereRemovedFromDatabase(IEnumerable<User> usersToDelete)
+        /// <inheritdoc />
+        public async Task DeleteOneAsync(User user)
         {
-            foreach(var u in usersToDelete)
-            {
-                await _botNotificationSender.NotifyUserIsOrIsNotRegistered(u.ChatId, false);
-            }
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+        }
+
+        /// <inheritdoc />
+        public async Task DeleteRangeAsync(IEnumerable<User> users)
+        {
+            _context.RemoveRange(users);
+            await _context.SaveChangesAsync();
         }
     }
 }

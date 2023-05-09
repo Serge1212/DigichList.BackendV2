@@ -48,7 +48,7 @@ namespace DigichList.Backend.Interfaces
         /// <summary>
         /// Verifies the admin on logging in.
         /// </summary>
-        TaskTask<(bool, int)> VerifyAdminAsync(LoginViewModel request);
+        Task<(bool, int)> VerifyAdminAsync(LoginViewModel request);
 
         /// <summary>
         /// Deletes the specified admin.
