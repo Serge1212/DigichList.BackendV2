@@ -58,7 +58,8 @@ namespace DigichList.Backend.Services
         /// <inheritdoc />
         public async Task<List<UserViewModel>> GetUnregisteredUsersAsync()
         {
-            var result = (await _userRepository.GetUsersWithRolesAsync()).Where(u => !u.IsRegistered).ToList();
+            var users = (await _userRepository.GetUsersWithRolesAsync());
+            var result = users.Where(u => !u.IsRegistered).ToList();
             var mapped = result.Select(u => UserViewModel.ToViewModel(u)).ToList();
             return mapped;
         }

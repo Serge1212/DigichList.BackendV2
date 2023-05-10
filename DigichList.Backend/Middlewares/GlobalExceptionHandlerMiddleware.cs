@@ -36,7 +36,7 @@ namespace DigichList.Backend.Middlewares
                 var response = context.Response;
                 response.ContentType = "application/json; charset=utf-8";
 
-                var description = new DescriptionResponseApiModel(error.Message);
+                var description = new DescriptionResponseApiModel(error.StackTrace, error.Message);
                 if (error is FormatException) description.Message = "Invalid data format";
                 else if (error is ArgumentNullException) description.Message = "Some of the fields cannot be empty";
                 var details = new ErrorDetails

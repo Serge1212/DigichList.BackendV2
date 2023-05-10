@@ -3,9 +3,12 @@
     public class DescriptionResponseApiModel
     {
         public string Message {get; set;}
-        public DescriptionResponseApiModel(string message = null)
+
+        public string StackTrace { get; set; }
+        public DescriptionResponseApiModel(string stackTrace, string message = null)
         {
             Message = message;
+            StackTrace = stackTrace;
         }
     }
 }

@@ -21,7 +21,7 @@ namespace DigichList.Infrastructure.Repositories
         }
 
         /// <inheritdoc />
-        public async Task<User> GetByIdAsync(int id) => await _context.Users.FindAsync(id);
+        public async Task<User> GetByIdAsync(int id) => await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
 
         /// <inheritdoc />
         public async Task<List<User>> GetUsersWithRolesAsync() => await _context.Users.Include(r => r.Role).ToListAsync();
