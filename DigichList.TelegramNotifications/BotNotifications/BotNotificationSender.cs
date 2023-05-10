@@ -10,18 +10,18 @@ namespace DigichList.TelegramNotifications.BotNotifications
         public async Task NotifyUserIsOrIsNotRegistered(long chatId, bool registrationStatus)
         {
             await (registrationStatus ?
-                SendMessageAsync(chatId, UserGotRegistered) :
-                SendMessageAsync(chatId, UserWasNotRegistered));
+                SendMessageAsync(chatId, USER_REGISTERED) :
+                SendMessageAsync(chatId, USER_NOT_REGISTERED));
         }
         public async Task NotifyUserWasGivenWithDefect(long chatId, Defect defect)
         {
-            var message = string.Format(UserGotDefect, defect.ToString());
+            var message = string.Format(USER_GOT_DEFECT, defect.ToString());
             await SendMessageAsync(chatId, message);
         }
 
         public async Task NotifyUserGotRole(long chatId, string roleName)
         {
-            var message = GetMessageForSpecifiedRole(roleName, UserGotRole);
+            var message = GetMessageForSpecifiedRole(roleName, USER_GOT_ROLE);
             await SendMessageAsync(chatId, message);
         }
 
@@ -29,18 +29,18 @@ namespace DigichList.TelegramNotifications.BotNotifications
         {
             if (roleName == "Maid")
             {
-                return string.Concat(message, MaidRoleDescription);
+                return string.Concat(message, MAID_ROLE_DESCRIPTION);
             }
             else if(roleName == "Technician")
             {
-                return string.Concat(message, TechnicianRoleDescription);
+                return string.Concat(message, TECHNICIAN_ROLE_DESCRIPTION);
             }
             return string.Empty;
         }
 
         public async Task NotifyUserLostRole(long chatId, string roleName)
         {
-            var message = GetMessageForSpecifiedRole(roleName, "Unfortunately you've lost the following role:\n");
+            var message = GetMessageForSpecifiedRole(roleName, "Unfortunately you've lost the following capabilities:\n");
             await SendMessageAsync(chatId, message);
         }
     }

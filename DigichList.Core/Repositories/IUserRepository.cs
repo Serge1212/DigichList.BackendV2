@@ -10,6 +10,11 @@ namespace DigichList.Core.Repositories
     public interface IUserRepository
     {
         /// <summary>
+        /// Returns all users.
+        /// </summary>
+        Task<IReadOnlyList<User>> GetAllAsync();
+
+        /// <summary>
         /// Returns the user by specified identifier.
         /// </summary>
         public Task<User> GetByIdAsync(int id);

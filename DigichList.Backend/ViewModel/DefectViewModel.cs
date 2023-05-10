@@ -62,8 +62,9 @@ namespace DigichList.Backend.ViewModel
                 Description = defect.Description,
                 CreatedAt = defect.CreatedAt.ToShortDateString(),
                 RoomNumber = defect.RoomNumber,
-                Assignee = defect.AssignedWorker.FirstName, //TODO: make more informative
+                Assignee = defect.AssignedWorker?.FirstName, //TODO: make more informative
                 AssigneeId = defect.AssignedWorker?.Id,
+                Publisher = defect.CreatedBy,
                 Status = ResolveStatus((DefectStatus)defect.Status),
                 StatusChangedAt = defect.StatusChangedAt.HasValue?
                     defect.StatusChangedAt.Value.ToShortDateString() :

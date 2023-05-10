@@ -2,6 +2,7 @@
 
 namespace DigichList.Core.Entities
 {
+#nullable enable
     /// <summary>
     /// The entity that represents the end-user info.
     /// </summary>
@@ -20,17 +21,17 @@ namespace DigichList.Core.Entities
         /// <summary>
         /// The user's first name.
         /// </summary>
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         /// <summary>
         /// The user's last name.
         /// </summary>
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         /// <summary>
         /// The user's username.
         /// </summary>
-        public string Username { get; set; }
+        public string? Username { get; set; }
 
         /// <summary>
         /// The flag that indicates that the user is registered or not.
@@ -41,16 +42,17 @@ namespace DigichList.Core.Entities
         /// The user's role.
         /// Null when none.
         /// </summary>
-        public int RoleId { get; set; }
+        public int? RoleId { get; set; }
 
         /// <summary>
         /// More info about related role.
         /// </summary>
-        public Role Role { get; set; }
+        public Role? Role { get; set; }
 
         /// <summary>
         /// The defects assigned to this user.
         /// </summary>
-        public List<Defect> Defects { get; set; } = new List<Defect>();
+        public List<Defect>? Defects { get; set; } = new List<Defect>();
     }
+#nullable disable
 }

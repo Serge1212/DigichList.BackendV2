@@ -63,5 +63,7 @@ namespace DigichList.Core.Entities
         /// The related images.
         /// </summary>
         public List<DefectImage> DefectImages { get; set; } = new List<DefectImage>();
+
+        public override string ToString() => $"Room number: {RoomNumber}\nDescription: {Description},\n Published: {CreatedAt}";
     }
 }

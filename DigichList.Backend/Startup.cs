@@ -73,7 +73,7 @@ namespace DigichList.Backend
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shop", Version = "v1" });
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "Digichlist", Version = "v2" });
             });
         }
 
@@ -84,7 +84,7 @@ namespace DigichList.Backend
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shop v1");
+                    c.SwaggerEndpoint("/swagger/v2/swagger.json", "Digichlist v2");
                     c.RoutePrefix = "swagger/ui";
                 });
 
