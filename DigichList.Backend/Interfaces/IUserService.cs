@@ -13,7 +13,7 @@ namespace DigichList.Backend.Interfaces
         /// <summary>
         /// Returns a user with role info by specified identifier.
         /// </summary>
-        public Task<User> GetUserWithRoleAsync(int id);
+        public Task<UserViewModel> GetUserWithRoleAsync(int id);
 
         /// <summary>
         /// Returns all users with roles.
@@ -23,17 +23,17 @@ namespace DigichList.Backend.Interfaces
         /// <summary>
         /// Returns all users with Technician role.
         /// </summary>
-        public Task<List<User>> GetTechniciansAsync();
+        public Task<List<UserViewModel>> GetTechniciansAsync();
 
         /// <summary>
         /// Returns all registered users.
         /// </summary>
-        public Task<List<User>> GetRegisteredUsersAsync();
+        public Task<List<UserViewModel>> GetRegisteredUsersAsync();
 
         /// <summary>
         /// Returns all not registered users.
         /// </summary>
-        Task<List<User>> GetUnregisteredUsersAsync();
+        Task<List<UserViewModel>> GetUnregisteredUsersAsync();
 
         /// <summary>
         /// Adds a brand new user.

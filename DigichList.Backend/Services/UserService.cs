@@ -23,33 +23,50 @@ namespace DigichList.Backend.Services
             _botNotificationSender = botNotificationSender;
         }
 
-        public UserService()
-        {
-        }
-
         /// <inheritdoc />
-        public async Task<User> GetUserWithRoleAsync(int id) => await _userRepository.GetUserWithRoleAsync(id);
+        public async Task<UserViewModel> GetUserWithRoleAsync(int id)
+        {
+            var result = await _userRepository.GetUserWithRoleAsync(id);
+            return UserViewModel.ToViewModel(result);
+        }
 
         /// <inheritdoc />
         public async Task<List<UserViewModel>> GetUsersWithRolesAsync()
         {
             var users = await _userRepository.GetUsersWithRolesAsync();
-            var mappedUsers = users.Select(u => UserViewModel.ToViewModel(u)).ToList();
-            return mappedUsers;
+            var mapped = users.Select(u => UserViewModel.ToViewModel(u)).ToList();
+            return mapped;
         }
 
         /// <inheritdoc />
-        public async Task<List<User>> GetTechniciansAsync() => (await _userRepository.GetUsersWithRolesAsync()).Where(u => u.Role?.Name == "Technician").ToList();
+        public async Task<List<UserViewModel>> GetTechniciansAsync()
+        {
+            var result = (await _userRepository.GetUsersWithRolesAsync()).Where(u => u.Role?.Name == "Technician").ToList();
+            var mapped = result.Select(u => UserViewModel.ToViewModel(u)).ToList();
+            return mapped;
+        }
+        
 
         /// <inheritdoc />
-        public async Task<List<User>> GetRegisteredUsersAsync() => (await _userRepository.GetUsersWithRolesAsync()).Where(u => u.IsRegistered).ToList();
+        public async Task<List<UserViewModel>> GetRegisteredUsersAsync()
+        {
+            var result = (await _userRepository.GetUsersWithRolesAsync()).Where(u => u.IsRegistered).ToList();
+            var mapped = result.Select(u => UserViewModel.ToViewModel(u)).ToList();
+            return mapped;
+        }
 
         /// <inheritdoc />
-        public async Task<List<User>> GetUnregisteredUsersAsync() => (await _userRepository.GetUsersWithRolesAsync()).Where(u => !u.IsRegistered).ToList();
+        public async Task<List<UserViewModel>> GetUnregisteredUsersAsync()
+        {
+            var result = (await _userRepository.GetUsersWithRolesAsync()).Where(u => !u.IsRegistered).ToList();
+            var mapped = result.Select(u => UserViewModel.ToViewModel(u)).ToList();
+            return mapped;
+        }
 
         /// <inheritdoc />
         public async Task AddAsync(User user) => await _userRepository.AddAsync(user);
 
+        /// <inheritdoc />
         public async Task<bool> UpdateAsync(User user)
         {
             if (user == null)
@@ -66,6 +83,7 @@ namespace DigichList.Backend.Services
             return true;
         }
 
+        /// <inheritdoc />
         public async Task<bool> DeleteOneAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
@@ -84,6 +102,7 @@ namespace DigichList.Backend.Services
             return true;
         }
 
+        /// <inheritdoc />
         public async Task<bool> DeleteManyAsync(int[] ids)
         {
             var users = await _userRepository.GetRangeByIdsAsync(ids);
@@ -103,14 +122,6 @@ namespace DigichList.Backend.Services
             }
 
             return true;
-        }
-
-        async Task NotifyUsersWereRemoved(IEnumerable<User> usersToDelete)
-        {
-            foreach (var u in usersToDelete)
-            {
-                await NotifyOnDeteleAsync(u.ChatId);
-            }
         }
 
         async Task NotifyOnDeteleAsync(long chatId)

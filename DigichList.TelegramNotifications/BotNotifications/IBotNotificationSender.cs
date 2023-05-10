@@ -7,7 +7,6 @@ namespace DigichList.TelegramNotifications.BotNotifications
     {
         public Task NotifyUserIsOrIsNotRegistered(long chatId, bool registrationStatus);
         public Task NotifyUserWasGivenWithDefect(long chatId, Defect defect);
-        public Task NotifyUserHisDefectGotApproved(long chatId, string defectDescription);
         public Task NotifyUserGotRole(long chatId, string roleName);
         public Task NotifyUserLostRole(long chatId, string roleName);
 

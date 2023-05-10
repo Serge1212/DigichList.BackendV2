@@ -19,12 +19,6 @@ namespace DigichList.TelegramNotifications.BotNotifications
             await SendMessageAsync(chatId, message);
         }
 
-        public async Task NotifyUserHisDefectGotApproved(long chatId, string defectDescription)
-        {
-            var message = string.Format(UsersDefectGotApproved, defectDescription);
-            await SendMessageAsync(chatId, message);
-        }
-
         public async Task NotifyUserGotRole(long chatId, string roleName)
         {
             var message = GetMessageForSpecifiedRole(roleName, UserGotRole);
@@ -46,7 +40,7 @@ namespace DigichList.TelegramNotifications.BotNotifications
 
         public async Task NotifyUserLostRole(long chatId, string roleName)
         {
-            var message = GetMessageForSpecifiedRole(roleName, "На жаль, ви втратили наступні повноваження:\n");
+            var message = GetMessageForSpecifiedRole(roleName, "Unfortunately you've lost the following role:\n");
             await SendMessageAsync(chatId, message);
         }
     }

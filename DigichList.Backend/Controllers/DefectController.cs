@@ -1,10 +1,6 @@
-﻿using AutoMapper;
-using DigichList.Backend.Interfaces;
+﻿using DigichList.Backend.Interfaces;
 using DigichList.Backend.ViewModel;
-using DigichList.Core.Repositories;
-using DigichList.TelegramNotifications.BotNotifications;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DigichList.Backend.Controllers
@@ -14,21 +10,17 @@ namespace DigichList.Backend.Controllers
     public class DefectController : ControllerBase
     {
         private readonly IDefectService _service;
-        private readonly IMapper _mapper;
 
-        public DefectController(
-            IDefectService service,
-            IMapper mapper)
+        public DefectController(IDefectService service)
         {
             _service = service;
-            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
             var defects = _service.GetAll();
-            return Ok(_mapper.Map<IEnumerable<DefectViewModel>>(defects)); 
+            return Ok(defects); 
         }
 
         [HttpGet("getDefect")]
@@ -36,9 +28,8 @@ namespace DigichList.Backend.Controllers
         {
             var defect = await _service.GetByIdAsync(id);
             return defect != null ?
-                Ok(_mapper.Map<DefectViewModel>(defect)) :
-                NotFound($"Defect with id of {id} was not found");
-
+                Ok(defect) :
+                NotFound();
         }
 
         [HttpPost]

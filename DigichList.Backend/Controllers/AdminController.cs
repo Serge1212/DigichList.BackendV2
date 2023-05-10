@@ -1,12 +1,10 @@
-﻿using AutoMapper;
-using DigichList.Backend.Helpers;
+﻿using DigichList.Backend.Helpers;
 using DigichList.Backend.Interfaces;
 using DigichList.Backend.ViewModel;
 using DigichList.Core.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DigichList.Backend.Controllers
@@ -16,15 +14,12 @@ namespace DigichList.Backend.Controllers
     {
         readonly IAdminService _service;
         readonly JwtService _jwtService;
-        readonly IMapper _mapper;
 
         public AdminController(IAdminService service,
-            JwtService jwtService,
-            IMapper mapper)
+            JwtService jwtService)
         {
             _service = service;
             _jwtService = jwtService;
-            _mapper = mapper;
         }
 
         [HttpGet]
@@ -32,7 +27,7 @@ namespace DigichList.Backend.Controllers
         public async Task<IActionResult> GetAdmins()
         {
             var admins = await _service.GetAllAsync();
-            return Ok(_mapper.Map<IEnumerable<AdminViewModel>>(admins));
+            return Ok(admins);
         }
 
         [HttpGet]
@@ -40,9 +35,7 @@ namespace DigichList.Backend.Controllers
         public async Task<IActionResult> GetAdmin(int id)
         {
             var admin = await _service.GetByIdAsync(id);
-            return admin != null ?
-                Ok(_mapper.Map<AdminViewModel>(admin)) :
-                NotFound($"Admin with id of {id} was not found");
+            return admin != null ? Ok(admin) : NotFound();
         }
 
         [HttpPost]
@@ -57,13 +50,8 @@ namespace DigichList.Backend.Controllers
         [Route("api/[controller]/{id}")]
         public async Task<IActionResult> DeleteAdmin(int id)
         {
-            var admin = await _service.GetByIdAsync(id);
-            if(admin != null)
-            {
-                await _service.DeleteAsync(admin);
-                return Ok();
-            }
-            return NotFound();
+            await _service.DeleteAsync(id);
+            return Ok();
         }
 
         [HttpDelete("deleteAdmins")]

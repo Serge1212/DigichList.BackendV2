@@ -1,4 +1,5 @@
 ﻿using DigichList.Backend.Interfaces;
+using DigichList.Backend.ViewModel;
 using DigichList.Core.Entities;
 using DigichList.Core.Repositories;
 using DigichList.TelegramNotifications.BotNotifications;
@@ -28,10 +29,25 @@ namespace DigichList.Backend.Services
         }
 
         /// <inheritdoc />
-        public async Task<List<Role>> GetAllAsync() => await _roleRepository.GetAllAsync();
+        public async Task<List<RoleViewModel>> GetAllAsync()
+        {
+            var result = await _roleRepository.GetAllAsync();
+            var mapped = new List<RoleViewModel>();
+
+            foreach(var r in result)
+            {
+                mapped.Add(RoleViewModel.ToViewModel(r));
+            }
+
+            return mapped;
+        }
 
         /// <inheritdoc />
-        public async Task<Role> GetByIdAsync(int id) => await _roleRepository.GetByIdAsync(id);
+        public async Task<RoleViewModel> GetByIdAsync(int id)
+        {
+            var result = await _roleRepository.GetByIdAsync(id);
+            return RoleViewModel.ToViewModel(result);
+        }
 
         /// <inheritdoc />
         public Task UpdateAsync(Role model) => _roleRepository.UpdateAsync(model);

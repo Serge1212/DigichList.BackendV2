@@ -1,13 +1,10 @@
 using AutoMapper;
 using DigichList.Backend.Controllers;
 using DigichList.Backend.Helpers;
-using DigichList.Backend.Mappers;
-using DigichList.Backend.Options;
 using DigichList.Backend.ViewModel;
 using DigichList.Core.Entities;
 using DigichList.Core.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Moq;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,6 @@
-﻿using DigichList.Core.Entities;
+﻿using DigichList.Backend.Enums;
+using DigichList.Core.Entities;
+using System;
 
 namespace DigichList.Backend.ViewModel
 {
@@ -40,7 +42,7 @@ namespace DigichList.Backend.ViewModel
         /// <summary>
         /// The identifier of assigned user to fix this defect.
         /// </summary>
-        public int AssigneeId { get; set; }
+        public int? AssigneeId { get; set; }
 
         /// <summary>
         /// Current status for this defect.
@@ -51,5 +53,33 @@ namespace DigichList.Backend.ViewModel
         /// The date and time the status was last changed.
         /// </summary>
         public string StatusChangedAt { get; set; }
+
+        public static DefectViewModel ToViewModel(Defect defect)
+        {
+            return new DefectViewModel
+            {
+                Id = defect.Id,
+                Description = defect.Description,
+                CreatedAt = defect.CreatedAt.ToShortDateString(),
+                RoomNumber = defect.RoomNumber,
+                Assignee = defect.AssignedWorker.FirstName, //TODO: make more informative
+                AssigneeId = defect.AssignedWorker?.Id,
+                Status = ResolveStatus((DefectStatus)defect.Status),
+                StatusChangedAt = defect.StatusChangedAt.HasValue?
+                    defect.StatusChangedAt.Value.ToShortDateString() :
+                    "N/A"
+            };
+        }
+
+        static string ResolveStatus(DefectStatus status)
+        {
+            return status switch
+            {
+                DefectStatus.Opened => "Opened",
+                DefectStatus.Fixing => "Fixing",
+                DefectStatus.Eliminated => "Eliminated",
+                _ => "Undefined"
+            };
+        }
     }
 }

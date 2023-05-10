@@ -1,4 +1,5 @@
-﻿using DigichList.Core.Entities;
+﻿using DigichList.Backend.ViewModel;
+using DigichList.Core.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,12 +13,12 @@ namespace DigichList.Backend.Interfaces
         /// <summary>
         /// Returns all roles.
         /// </summary>
-        public Task<List<Role>> GetAllAsync();
+        public Task<List<RoleViewModel>> GetAllAsync();
 
         /// <summary>
         /// Returns the role by specified identifier.
         /// </summary>
-        Task<Role> GetByIdAsync(int id);
+        Task<RoleViewModel> GetByIdAsync(int id);
 
         /// <summary>
         /// Updates the specified role.

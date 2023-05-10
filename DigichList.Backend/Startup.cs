@@ -71,8 +71,6 @@ namespace DigichList.Backend
             var authOptionsCifiguration = Configuration.GetSection("Auth");
             services.Configure<AuthOptions>(authOptionsCifiguration);
 
-            services.AddAutoMapper(typeof(Startup));//TODO: remove when all settled.
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shop", Version = "v1" });

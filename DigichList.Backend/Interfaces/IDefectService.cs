@@ -13,12 +13,12 @@ namespace DigichList.Backend.Interfaces
         /// <summary>
         /// Returns all defects.
         /// </summary>
-        public List<Defect> GetAll();
+        public List<DefectViewModel> GetAll();
 
         /// <summary>
         /// Returns single defect by specified identifier.
         /// </summary>
-        public Task<Defect> GetByIdAsync(int id);
+        public Task<DefectViewModel> GetByIdAsync(int id);
 
         /// <summary>
         /// Updates the specified defect.

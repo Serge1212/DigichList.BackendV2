@@ -13,12 +13,12 @@ namespace DigichList.Backend.Interfaces
         /// <summary>
         /// Gets all admins.
         /// </summary>
-        Task<IReadOnlyList<Admin>> GetAllAsync();
+        Task<IReadOnlyList<AdminViewModel>> GetAllAsync();
 
         /// <summary>
         /// Returns the admin by specified identifier.
         /// </summary>
-        public Task<Admin> GetByIdAsync(int id);
+        public Task<AdminViewModel> GetByIdAsync(int id);
 
         /// <summary>
         /// Returns the admin by specified email.
@@ -53,6 +53,6 @@ namespace DigichList.Backend.Interfaces
         /// <summary>
         /// Deletes the specified admin.
         /// </summary>
-        Task DeleteAsync(Admin admin);
+        Task DeleteAsync(int id);
     }
 }

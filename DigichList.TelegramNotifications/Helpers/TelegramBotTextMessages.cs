@@ -2,12 +2,11 @@
 {
     internal static class TelegramBotTextMessages
     {
-        internal const string UserGotRegistered = "Вітаємо! Вашу заявку на реєстрацію було схвалено";
-        internal const string UserWasNotRegistered = "На жаль, Вашу реєстрацію або заявку на реєстрацію було відхилено";
-        internal const string UserGotDefect = "Вам призначено дефект:\n{0}";
-        internal const string UsersDefectGotApproved = "Ваш дефект з описом \"{0}\" підтвердили!";
-        internal const string UserGotRole = "Вітаємо! Вам була призначена роль. Тепер ви зможете:\n";
-        internal const string MaidRoleDescription = "Публікувати дефекти";
-        internal const string TechnicianRoleDescription = "Публікувати дефекти\nВиправляти дефекти";
+        internal const string UserGotRegistered = "Congratulations! Your registration request has been approved.";
+        internal const string UserWasNotRegistered = "Unfortunately, your registration request has been declined.";
+        internal const string UserGotDefect = "You've been assigned with a defect:\n{0}";
+        internal const string UserGotRole = "Congratulations! You've been given with a role. Now you can:\n";
+        internal const string MaidRoleDescription = "Publish defects.";
+        internal const string TechnicianRoleDescription = "Publish defects.\nFix defects.";
     }
 }

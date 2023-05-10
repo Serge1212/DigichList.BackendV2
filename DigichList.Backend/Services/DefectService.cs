@@ -30,10 +30,27 @@ namespace DigichList.Backend.Services
         }
 
         /// <inheritdoc />
-        public List<Defect> GetAll() => _defectRepository.GetAll();
+        public List<DefectViewModel> GetAll()
+        {
+            var result = _defectRepository.GetAll();
+            var mapped = new List<DefectViewModel>();
+
+            foreach(var d in result)
+            {
+                mapped.Add(DefectViewModel.ToViewModel(d));
+            }
+
+            return mapped;
+        }
 
         /// <inheritdoc />
-        public async Task<Defect> GetByIdAsync(int id) => await _defectRepository.GetByIdAsync(id);
+        public async Task<DefectViewModel> GetByIdAsync(int id)
+        {
+            var result = await _defectRepository.GetByIdAsync(id);
+            var mapped = DefectViewModel.ToViewModel(result);
+
+            return mapped;
+        }
 
         /// <inheritdoc />
         public async Task UpdateAsync(DefectViewModel model)
@@ -44,7 +61,7 @@ namespace DigichList.Backend.Services
             defect.RoomNumber = model.RoomNumber;
             defect.Status = (int)Enum.Parse(typeof(DefectStatus), model.Status);
 
-            var worker = await _userRepository.GetByIdAsync(model.AssigneeId);
+            var worker = await _userRepository.GetByIdAsync(model.AssigneeId.Value);
 
             if (worker != null)
             {

@@ -26,10 +26,25 @@ namespace DigichList.Backend.Services
         public async Task<Admin> GetAdminByEmailAsync(string email) => await _repo.GetAdminByEmailAsync(email);
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<Admin>> GetAllAsync() => await _repo.GetAllAsync();
+        public async Task<IReadOnlyList<AdminViewModel>> GetAllAsync()
+        {
+            var result = await _repo.GetAllAsync();
+            var mapped = new List<AdminViewModel>();
+
+            foreach(var a in result)
+            {
+                mapped.Add(AdminViewModel.ToViewModel(a));
+            }
+
+            return mapped.AsReadOnly();
+        }
 
         /// <inheritdoc />
-        public async Task<Admin> GetByIdAsync(int id) => await _repo.GetByIdAsync(id);
+        public async Task<AdminViewModel> GetByIdAsync(int id)
+        {
+            var result = await _repo.GetByIdAsync(id);
+            return AdminViewModel.ToViewModel(result);
+        }
 
         /// <inheritdoc />
         public async Task AddAsync(Admin admin)
@@ -38,6 +53,7 @@ namespace DigichList.Backend.Services
             await _repo.AddAsync(admin);
         }
 
+        /// <inheritdoc />
         public async Task UpdateAdminAsync(Admin admin)
         {
             var existingAdmin = await _repo.GetByIdAsync(admin.Id);
@@ -68,7 +84,11 @@ namespace DigichList.Backend.Services
         }
 
         /// <inheritdoc />
-        public async Task DeleteAsync(Admin admin) => await _repo.DeleteAsync(admin);
+        public async Task DeleteAsync(int id)
+        {
+            var admin = await _repo.GetByIdAsync(id);
+            await _repo.DeleteAsync(admin);
+        }
 
         public async Task<(bool, int)> VerifyAdminAsync(LoginViewModel request)
         {

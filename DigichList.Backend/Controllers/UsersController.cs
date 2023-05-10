@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using DigichList.Backend.Interfaces;
-using DigichList.Backend.ViewModel;
+﻿using DigichList.Backend.Interfaces;
 using DigichList.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DigichList.Backend.Controllers
@@ -12,12 +9,10 @@ namespace DigichList.Backend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _service;
-        private readonly IMapper _mapper;
 
-        public UsersController(IUserService service, IMapper mapper)
+        public UsersController(IUserService service)
         {
             _service = service;
-            _mapper = mapper;
         }
 
         [HttpGet]
@@ -33,7 +28,7 @@ namespace DigichList.Backend.Controllers
         public async Task<IActionResult> GetRegisteredUsersAsync()
         {
             var users = await _service.GetRegisteredUsersAsync();
-            return Ok(_mapper.Map<IEnumerable<UserViewModel>>(users));
+            return Ok(users);
         }
 
         [HttpGet]
@@ -41,7 +36,7 @@ namespace DigichList.Backend.Controllers
         public async Task<IActionResult> GetUnregisteredUsersAsync()
         {
             var users = await _service.GetUnregisteredUsersAsync();
-            return Ok(_mapper.Map<IEnumerable<UserViewModel>>(users));
+            return Ok(users);
         }
 
         [HttpGet]
@@ -49,9 +44,7 @@ namespace DigichList.Backend.Controllers
         public async Task<IActionResult> GetAsync(int id)
         {
             var user = await _service.GetUserWithRoleAsync(id);
-            return user != null ?
-                Ok(_mapper.Map<UserViewModel>(user)) :
-                NotFound();
+            return user != null ? Ok(user) : NotFound();
         }
 
         [HttpGet]
@@ -59,10 +52,7 @@ namespace DigichList.Backend.Controllers
         public async Task<IActionResult> GetTechniciansAsync()
         {
             var technicians = await _service.GetTechniciansAsync();
-            return technicians != null ?
-                Ok(_mapper.Map<IEnumerable<TechnicianViewModel>>(technicians)) :
-                NotFound();
-
+            return technicians != null ? Ok(technicians) : NotFound();
         }
 
         [HttpPost]
@@ -70,7 +60,7 @@ namespace DigichList.Backend.Controllers
         public async Task<IActionResult> AddAsync(User user)
         {
             await _service.AddAsync(user);
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return Ok();
         }
 
         [HttpPost]

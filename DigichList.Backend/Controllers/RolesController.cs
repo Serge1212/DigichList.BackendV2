@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using DigichList.Backend.Interfaces;
-using DigichList.Backend.ViewModel;
+﻿using DigichList.Backend.Interfaces;
 using DigichList.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DigichList.Backend.Controllers
@@ -12,14 +9,10 @@ namespace DigichList.Backend.Controllers
     public class RolesController : ControllerBase
     {
         private readonly IRoleService _service;
-        private readonly IMapper _mapper;
 
-        public RolesController(
-            IRoleService service,
-            IMapper mapper)
+        public RolesController(IRoleService service)
         {
             _service = service;
-            _mapper = mapper;
         }
 
         [HttpGet]
@@ -27,7 +20,7 @@ namespace DigichList.Backend.Controllers
         public async Task<IActionResult> GetAllAsync()
         {
             var roles = await _service.GetAllAsync();
-            return Ok(_mapper.Map<IEnumerable<RoleViewModel>>(roles));
+            return Ok(roles);
         }
 
         [HttpGet]
@@ -35,9 +28,7 @@ namespace DigichList.Backend.Controllers
         public async Task<IActionResult> GetByIdAsync(int id)
         {
             var role = await _service.GetByIdAsync(id);
-            return role != null ?
-                Ok(_mapper.Map<ExtendedRoleViewModel>(role)) :
-                NotFound();
+            return role != null ? Ok(role) : NotFound();
         }
 
         [HttpPost]
