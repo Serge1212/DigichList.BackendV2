@@ -23,15 +23,5 @@ namespace DigichList.Core.Repositories
         /// Updates the specified role.
         /// </summary>
         public Task UpdateAsync(Role role);
-
-        /// <summary>
-        /// Assignes the role for specified user.
-        /// </summary>
-        public Task<bool> AssignRoleAsync(User user, int roleId);
-
-        /// <summary>
-        /// Removes the role from specified user.
-        /// </summary>
-        public Task<bool> RemoveRoleFromUserAsync(User user);
     }
 }

@@ -80,7 +80,7 @@ namespace DigichList.Backend.Controllers
         }
 
         [HttpPost]
-        [Route("api/[controller]/UpdateAdmin")]
+        [Route("api/[controller]/updateAdmin")]
         public async Task<IActionResult> UpdateAdminAsync([FromBody] Admin admin)
         {
             await _service.UpdateAdminAsync(admin);
@@ -107,7 +107,7 @@ namespace DigichList.Backend.Controllers
                 Secure = true,
             });
 
-            return Ok(new 
+            return Ok(new
             { 
                 message = "Success"
             });
@@ -134,7 +134,7 @@ namespace DigichList.Backend.Controllers
             }
         }
 
-        [HttpPost("Logout")]
+        [HttpPost("logout")]
         public IActionResult Logout()
         {
             CookieOptions options = new()

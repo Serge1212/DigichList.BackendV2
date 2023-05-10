@@ -31,52 +31,5 @@ namespace DigichList.Infrastructure.Repositories
             _context.Roles.Update(role);
             await _context.SaveChangesAsync();
         }
-
-        /// <inheritdoc />
-        public async Task<bool> AssignRoleAsync(User user, int roleId)
-        {
-            if(user == null)
-                return false;
-
-            var role = await GetByIdAsync(roleId);
-
-            if(role == null)
-                return false;
-            
-            // remove all assigned defects if a user is no longer a technician.
-            if(user?.Role?.Name == "Technician") //TODO: why rely on a magic value?
-            {
-                _context
-                    .Defects
-                    .RemoveRange(_context.Defects.Where(x => x.AssignedWorker.Id == user.Id));
-            }
-
-            // assign new role.
-            user.Role = role;
-            user.IsRegistered = true;
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-        /// <inheritdoc />
-        public async Task<bool> RemoveRoleFromUserAsync(User user)
-        {
-            if (user == null)
-                return false;
-
-            await RemoveRoleAndAssignedDefectsAsync(user);
-            return true;
-        }
-
-        private async Task RemoveRoleAndAssignedDefectsAsync(User user)
-        {
-            // remove all assigned defects for this user.
-            _context.Defects.RemoveRange(user.Defects.Where(x => x.ClosedAt == null));
-            user.Defects = null;
-            user.Role = null;
-            user.IsRegistered = false;
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-        }
     }
 }
