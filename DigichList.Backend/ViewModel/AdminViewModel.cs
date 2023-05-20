@@ -41,7 +41,7 @@ namespace DigichList.Backend.ViewModel
                 FirstName = admin.FirstName,
                 LastName = admin.LastName,
                 Email = admin.Email,
-                AccessLevel = (AccessLevels)admin.AccessLevel == AccessLevels.Admin ? "Admin" : "Superadmin",
+                AccessLevel = admin.AccessLevel == AccessLevels.Admin ? "Admin" : "Superadmin",
             };
         }
     }

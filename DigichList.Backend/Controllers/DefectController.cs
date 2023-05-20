@@ -64,7 +64,7 @@ namespace DigichList.Backend.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPost("assignDefect")]
         public async Task<IActionResult> AssignAsync(int userId, int defectId)
         {
             var (isSuccess, message) = await _service.AssignAsync(userId, defectId);

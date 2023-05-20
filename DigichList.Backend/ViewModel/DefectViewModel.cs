@@ -1,6 +1,5 @@
 ﻿using DigichList.Backend.Enums;
 using DigichList.Core.Entities;
-using System;
 
 namespace DigichList.Backend.ViewModel
 {
@@ -62,7 +61,7 @@ namespace DigichList.Backend.ViewModel
                 Description = defect.Description,
                 CreatedAt = defect.CreatedAt.ToShortDateString(),
                 RoomNumber = defect.RoomNumber,
-                Assignee = defect.AssignedWorker?.FirstName, //TODO: make more informative
+                Assignee = $"{defect.AssignedWorker?.FirstName} {defect.AssignedWorker?.LastName}, {defect.AssignedWorker?.Username}",
                 AssigneeId = defect.AssignedWorker?.Id,
                 Publisher = defect.CreatedBy,
                 Status = ResolveStatus((DefectStatus)defect.Status),
